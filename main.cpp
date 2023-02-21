@@ -9,12 +9,12 @@ using namespace std;
 /*꧁༒☬  ☠︎ I_Hate_This_Code ☠︎  ☬༒꧂
  *
  */
-int dx[] = {1, -1, 0, 0, -1, 1, -1, 1};
-int dy[] = {0, 0, 1, -1, 1, 1, -1, -1};
+//int dx[] = {1, -1, 0, 0, -1, 1, -1, 1};
+//int dy[] = {0, 0, 1, -1, 1, 1, -1, -1};
 
 int n = 9;
 int soduku [9][9] ;
-int taken [9][9];
+int taken [9][10];
 bool valid(int r, int c) {
     if (r >= n || c >= n || r < 0 || c < 0)
         return false;
@@ -40,16 +40,19 @@ bool checkCell(int& a, int& b, int& value) {
         }
     }
     // check the 3 by 3 zone (in which the cell belongs)
-    int offsetOne = (a / 3) * 3, offsetTwo = (b / 3) * 3;
-    for (int i = 0; i < 3; ++i) {
-        for (int j = 0; j < 3; ++j) {
-            int first = offsetOne + i, second = offsetTwo + j;
-            if (first == a && second == b)continue;
-            if (soduku[first][second] == value) {
-                return false;
-            }
-        }
+    int offsetOne = (a / 3) * 3, offsetTwo = (b / 3) ;
+    if(taken[offsetOne+offsetTwo][value]){
+        return false;
     }
+//    for (int i = 0; i < 3; ++i) {
+//        for (int j = 0; j < 3; ++j) {
+//            int first = offsetOne + i, second = offsetTwo + j;
+//            if (first == a && second == b)continue;
+//            if (soduku[first][second] == value) {
+//                return false;
+//            }
+//        }
+//    }
     return true;
 }
 
@@ -73,12 +76,16 @@ void backtracking(int a, int b) {
     for (int i = 1; i <= 9 ; ++i) {
         if(checkCell(a,b,i)){
             soduku[a][b]=i;
+            int number=soduku[a][b];
+            int offsetOne = (a / 3)*3 , offsetTwo = (b / 3);
+            taken[offsetOne+offsetTwo][number]=1;
             if(b==8){
                 backtracking(a+1,0);
             } else{
                 backtracking(a,b+1);
             }
             soduku[a][b]=0;
+            taken[offsetOne+offsetTwo][number]=0;
         }
     }
 
@@ -90,8 +97,8 @@ void solve() {
         for (int j = 0; j < n; ++j) {
             cin >> soduku[i][j];
             int number=soduku[i][j];
-            int offsetOne = (i / 3) , offsetTwo = (j / 3);
-
+            int offsetOne = (i / 3)*3 , offsetTwo = (j / 3);
+            taken[offsetOne+offsetTwo][number]=1;
         }
     }
 
