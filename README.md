@@ -1,6 +1,6 @@
 # sudoku-solver-with-backtracking
 this c++ consol program can solve any 9*9 sudoku using backtracking<br>
-note that empty cells are represented by 0
+note that empty cells are represented by 0<br>
 example input:
 
 6 0 2 0 8 0 7 4 0 <br>
