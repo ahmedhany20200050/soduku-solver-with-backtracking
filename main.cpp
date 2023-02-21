@@ -14,7 +14,9 @@ using namespace std;
 
 int n = 9;
 int soduku [9][9] ;
-int taken [9][10];
+int takenInZone [9][10];
+int numbersInColumns [9][10];
+int numbersInRows [9][10];
 bool valid(int r, int c) {
     if (r >= n || c >= n || r < 0 || c < 0)
         return false;
@@ -31,17 +33,19 @@ void print() {
 }
 
 bool checkCell(int& a, int& b, int& value) {
-    for (int i = 0; i < n; ++i) {
-        if (soduku[a][i] == value) {
-            return false;
-        }
-        if (soduku[i][b] == value) {
-            return false;
-        }
-    }
+    if(numbersInRows[a][value])return false;
+    if(numbersInColumns[b][value])return false;
+//    for (int i = 0; i < n; ++i) {
+//        if (soduku[a][i] == value) {
+//            return false;
+//        }
+//        if (soduku[i][b] == value) {
+//            return false;
+//        }
+//    }
     // check the 3 by 3 zone (in which the cell belongs)
     int offsetOne = (a / 3) * 3, offsetTwo = (b / 3) ;
-    if(taken[offsetOne+offsetTwo][value]){
+    if(takenInZone[offsetOne+offsetTwo][value]){
         return false;
     }
 //    for (int i = 0; i < 3; ++i) {
@@ -78,14 +82,18 @@ void backtracking(int a, int b) {
             soduku[a][b]=i;
             int number=soduku[a][b];
             int offsetOne = (a / 3)*3 , offsetTwo = (b / 3);
-            taken[offsetOne+offsetTwo][number]=1;
+            takenInZone[offsetOne+offsetTwo][number]=1;
+            numbersInColumns[b][number]=1;
+            numbersInRows[a][number]=1;
             if(b==8){
                 backtracking(a+1,0);
             } else{
                 backtracking(a,b+1);
             }
             soduku[a][b]=0;
-            taken[offsetOne+offsetTwo][number]=0;
+            takenInZone[offsetOne+offsetTwo][number]=0;
+            numbersInColumns[b][number]=0;
+            numbersInRows[a][number]=0;
         }
     }
 
@@ -93,12 +101,18 @@ void backtracking(int a, int b) {
 
 
 void solve() {
+    memset(soduku,0,sizeof soduku);
+    memset(numbersInColumns,0,sizeof numbersInColumns);
+    memset(numbersInRows,0,sizeof numbersInRows);
+    memset(takenInZone,0,sizeof takenInZone);
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
             cin >> soduku[i][j];
             int number=soduku[i][j];
             int offsetOne = (i / 3)*3 , offsetTwo = (j / 3);
-            taken[offsetOne+offsetTwo][number]=1;
+            takenInZone[offsetOne+offsetTwo][number]=1;
+            numbersInRows[i][number]=1;
+            numbersInColumns[j][number]=1;
         }
     }
 
